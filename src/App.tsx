@@ -126,8 +126,8 @@ function App() {
       <section className="hero container" id="top">
         <div className="hero-copy">
           <h1>Apply to the Careverse Creator Network</h1>
-          <p className="hero-lede">Welcome to the Careverse Creator Program. Careverse is building the universal layer for care — connecting people to doctors, family care, gyms, spas, pet care, kids&apos; health, and more, all in one seamless platform.</p>
-          <p className="hero-description">We&apos;re looking for creators who are passionate about healthcare, including beauty, wellness, family care, and pet care. Promote our mission to make quality care simple and accessible, drive traffic to our platform, and earn commissions on every successful referral.</p>
+          <p className="hero-lede">Welcome to the Careverse creator program. Careverse is connecting your doctors, family care, gyms, spas, pet care, kids&apos; health, and more, all in one place.</p>
+          <p className="hero-description">We&apos;re looking for creators who are passionate beauty, fitness, wellness, family care, and pet care. Talk about the benefits of Careverse, drive traffic to our platform, and earn commissions on every referral that converts.</p>
           <button className="button hero-cta" onClick={scrollToForm}>Apply to join <ArrowDown size={18} /></button>
         </div>
       </section>
