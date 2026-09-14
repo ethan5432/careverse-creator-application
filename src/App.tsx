@@ -119,7 +119,7 @@ function App() {
       <div className="bg-wash" aria-hidden="true" />
       <nav className="nav container">
         <a className="brand" href="#top" aria-label="Careverse home">
-          <img className="brand-logo" src="/image.png" alt="Careverse logo" />
+          <img className="brand-logo" src="/careverse_wordmark.svg" alt="Careverse logo" />
         </a>
       </nav>
 
@@ -225,7 +225,7 @@ function App() {
         </div>
       </section>
 
-      <footer className="footer container"><a className="brand" href="#top"><img className="brand-logo footer-logo" src="/image.png" alt="Careverse logo" /></a><span>Care, connected.</span></footer>
+      <footer className="footer"><div className="footer-inner container"><a className="brand" href="#top"><img className="brand-logo" src="/careverse_wordmark.svg" alt="Careverse logo" /></a><span>Care, connected.</span></div></footer>
 
       {isTermsOpen && <div className="modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setIsTermsOpen(false); }}><section className="terms-modal" role="dialog" aria-modal="true" aria-labelledby="terms-title"><button className="modal-close" onClick={() => setIsTermsOpen(false)} aria-label="Close terms"><X /></button><div className="section-kicker">The fine print, made clear</div><h2 id="terms-title">Program Terms</h2><p className="terms-intro">These Terms govern your participation in the Careverse Creator Program operated by Care Access PBC (&quot;Careverse&quot;, &quot;we&quot;, &quot;us&quot;). By applying to or participating in the Program, you agree to these Terms.</p><div className="terms-list">{terms.map(([title, text], index) => <div className={`term-row ${openTerm === index ? 'open' : ''}`} key={title}><button onClick={() => setOpenTerm(openTerm === index ? null : index)} aria-expanded={openTerm === index}><span>{title}</span>{openTerm === index ? <Minus size={17} /> : <Plus size={17} />}</button>{openTerm === index && <p>{text}</p>}</div>)}</div></section></div>}
     </main>

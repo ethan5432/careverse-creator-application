@@ -136,10 +136,10 @@ h1 .red { color: var(--red); }
 .success-card p { max-width: 390px; margin-bottom: 30px; color: var(--body); font-size: 16px; line-height: 1.62; }
 
 /* ── Footer ── */
-.footer { display: flex; justify-content: space-between; align-items: center; min-height: 98px; background: var(--night); color: var(--night-text); font-size: 12px; font-weight: 400; }
-.footer .brand { color: var(--white); }
-.footer-logo { filter: brightness(0) invert(1); mix-blend-mode: normal; }
-.footer span { color: var(--night-text); }
+.footer { background: var(--white); border-top: 1px solid var(--line); }
+.footer-inner { display: flex; justify-content: space-between; align-items: center; min-height: 88px; }
+.footer .brand { color: var(--ink); }
+.footer span { color: var(--muted); font-size: 13px; font-weight: 500; }
 
 /* ── Modal ── */
 .modal-backdrop { position: fixed; z-index: 10; inset: 0; display: grid; place-items: center; padding: 24px; background: rgba(20,21,26,.48); backdrop-filter: blur(5px); animation: fade-in .2s ease; }
