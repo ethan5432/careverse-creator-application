@@ -125,9 +125,15 @@ function App() {
 
       <section className="hero container" id="top">
         <div className="hero-copy">
-          <h1>Apply to the Careverse Creator Network</h1>
+          <div className="eyebrow">Creator Program</div>
+          <h1>Earn by helping people find <span className="red">care</span></h1>
           <p className="hero-lede">Welcome to the Careverse creator program. Careverse connects your doctors, family care, gyms, spas, pet care, kids&apos; health, and more, all in one place.</p>
           <p className="hero-description">We&apos;re looking for creators who are passionate beauty, fitness, wellness, family care, and pet care. Talk about the benefits of Careverse, drive traffic to our platform, and earn commissions on every referral that converts.</p>
+          <div className="proof-chips">
+            <span className="proof-chip"><span className="proof-check"><Check size={11} /></span>No follower minimum</span>
+            <span className="proof-chip"><span className="proof-check"><Check size={11} /></span>25% commission</span>
+            <span className="proof-chip"><span className="proof-check"><Check size={11} /></span>90-day window</span>
+          </div>
           <button className="button hero-cta" onClick={scrollToForm}>Apply to join <ArrowDown size={18} /></button>
         </div>
       </section>
@@ -142,10 +148,10 @@ function App() {
             <div className="aside-stat"><span>02</span><p>Get approved by our team</p></div>
             <div className="aside-stat"><span>03</span><p>Start sharing and earning</p></div>
             <div className="info-cards">
-              <InfoCard icon={<Percent />} title="Commission" text="You earn 25% on the first successful paid subscription or service fee through your link." tint="pink" />
-              <InfoCard icon={<Clock />} title="Window" text="If they click your link, you still earn when they convert within 90 days." tint="blue" />
-              <InfoCard icon={<MousePointerClick />} title="Attribution" text="Last click wins." tint="blue" />
-              <InfoCard icon={<Wallet />} title="Payout" text="Net 30 after the customer&apos;s first payment, once your balance reaches $100. No commission on refunds, chargebacks, or fraud." tint="pink" />
+              <InfoCard icon={<Percent />} title="Commission" text="You earn 25% on the first successful paid subscription or service fee through your link." />
+              <InfoCard icon={<Clock />} title="Window" text="If they click your link, you still earn when they convert within 90 days." />
+              <InfoCard icon={<MousePointerClick />} title="Attribution" text="Last click wins." />
+              <InfoCard icon={<Wallet />} title="Payout" text="Net 30 after the customer&apos;s first payment, once your balance reaches $100. No commission on refunds, chargebacks, or fraud." />
             </div>
           </aside>
 
@@ -234,8 +240,8 @@ function Checkbox({ name, text }: { name: string; text: React.ReactNode }) {
   return <label className="checkbox-row"><input type="checkbox" name={name} required /><span className="checkbox-custom"><Check size={13} /></span><span>{text}</span></label>;
 }
 
-function InfoCard({ icon, title, text, tint }: { icon: React.ReactNode; title: string; text: string; tint: 'pink' | 'blue' }) {
-  return <div className={`info-card tint-${tint}`}><span className="info-icon">{icon}</span><strong>{title}</strong><p>{text}</p></div>;
+function InfoCard({ icon, title, text }: { icon: React.ReactNode; title: string; text: string }) {
+  return <div className="info-card"><span className="info-icon">{icon}</span><strong>{title}</strong><p>{text}</p></div>;
 }
 
 export default App;
