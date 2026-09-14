@@ -28,7 +28,7 @@ button, input, select, textarea { font: inherit; }
 button, a { -webkit-tap-highlight-color: transparent; }
 a { color: inherit; }
 
-.site-shell { overflow: hidden; position: relative; background: var(--cream); }
+.site-shell { overflow: hidden; position: relative; background: var(--cream); min-height: 100vh; display: flex; flex-direction: column; }
 .container { width: min(1160px, calc(100% - 64px)); margin-inline: auto; }
 
 /* ── Nav ── */
@@ -37,7 +37,7 @@ a { color: inherit; }
 .brand-logo { height: 32px; width: auto; object-fit: contain; mix-blend-mode: multiply; }
 
 /* ── Page header ── */
-.application-section { padding: 56px 0 100px; background: var(--cream); }
+.application-section { padding: 56px 0 100px; background: var(--cream); flex: 1 0 auto; }
 .form-wrap { max-width: 760px; }
 .page-header { margin-bottom: 32px; }
 .page-header h1 { margin: 0 0 8px; color: var(--ink); font-size: clamp(32px, 4.5vw, 44px); line-height: 1.02; letter-spacing: -.04em; font-weight: 700; }
@@ -150,7 +150,7 @@ a { color: inherit; }
 .success-card p { max-width: 440px; margin: 0; color: var(--body); font-size: 16px; line-height: 1.62; }
 
 /* ── Footer ── */
-.footer { background: var(--white); border-top: 1px solid var(--line); }
+.footer { background: var(--white); border-top: 1px solid var(--line); flex-shrink: 0; }
 .footer-inner { display: flex; justify-content: space-between; align-items: center; min-height: 88px; }
 .footer .brand { color: var(--ink); }
 .footer span { color: var(--muted); font-size: 13px; font-weight: 500; }

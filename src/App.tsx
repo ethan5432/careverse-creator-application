@@ -206,7 +206,7 @@ function App() {
             <div className="success-card">
               <div className="success-icon"><Check size={28} /></div>
               <h2>Application received.</h2>
-              <p>We\u2019ll review your application and reach out by email. If approved, you\u2019ll receive an invitation to activate your partner account and set your password.</p>
+              <p>We’ll review your application and reach out by email. If approved, you’ll receive an invitation to activate your partner account and set your password.</p>
             </div>
           </div>
         </section>
@@ -264,7 +264,7 @@ function App() {
                 <SelectField label="Country" name="country" required options={countries} placeholder="Select a country" />
                 <Field label="State / region" name="state" optional />
               </div>
-              <p className="field-note">Your partner account will be created after approval. You\u2019ll receive an email to set your password and access the partner portal.</p>
+              <p className="field-note">Your partner account will be created after approval. You’ll receive an email to set your password and access the partner portal.</p>
             </div>
 
             {/* 03 — Dynamic section */}
