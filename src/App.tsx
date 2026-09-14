@@ -57,8 +57,6 @@ function App() {
   const [purchasesAds, setPurchasesAds] = useState('');
   const [adPlatformSelections, setAdPlatformSelections] = useState<string[]>([]);
   const [hasAuthority, setHasAuthority] = useState('');
-  const [acquisitionOther, setAcquisitionOther] = useState('');
-  const [adPlatformOther, setAdPlatformOther] = useState('');
   const [isTermsOpen, setIsTermsOpen] = useState(false);
   const [openTerm, setOpenTerm] = useState<number | null>(null);
   const [submitted, setSubmitted] = useState(false);
@@ -241,15 +239,15 @@ function App() {
               <p className="field-support">Choose the partner type that best describes how you will work with Careverse.</p>
               <div className="radio-cards">
                 <label className={`radio-card ${partnerType === 'creator' ? 'selected' : ''}`}>
-                  <input type="radio" name="partner_type" value="creator" checked={partnerType === 'creator'} onChange={() => setPartnerType('creator')} />
+                  <input type="radio" name="partner_type" value="creator" required checked={partnerType === 'creator'} onChange={() => setPartnerType('creator')} />
                   <span className="radio-dot" /><span className="radio-label">Creator</span>
                 </label>
                 <label className={`radio-card ${partnerType === 'business' ? 'selected' : ''}`}>
-                  <input type="radio" name="partner_type" value="business" checked={partnerType === 'business'} onChange={() => setPartnerType('business')} />
+                  <input type="radio" name="partner_type" value="business" required checked={partnerType === 'business'} onChange={() => setPartnerType('business')} />
                   <span className="radio-dot" /><span className="radio-label">Business / Agency</span>
                 </label>
                 <label className={`radio-card ${partnerType === 'network' ? 'selected' : ''}`}>
-                  <input type="radio" name="partner_type" value="network" checked={partnerType === 'network'} onChange={() => setPartnerType('network')} />
+                  <input type="radio" name="partner_type" value="network" required checked={partnerType === 'network'} onChange={() => setPartnerType('network')} />
                   <span className="radio-dot" /><span className="radio-label">Network</span>
                 </label>
               </div>
@@ -281,18 +279,11 @@ function App() {
                 <p className="field-support">Add at least one social account. <b>*</b></p>
                 <div className="channels-list">
                   {socialAccounts.map((account, index) => (
-                    <div key={index}>
-                      <div className="channel-row">
-                        <label><span>Platform <b>*</b></span><select required value={account.platform} onChange={(e) => updateSocialAccount(index, 'platform', e.target.value)}><option value="">Select a platform</option>{platforms.map((p) => <option key={p} value={p}>{p}</option>)}</select></label>
-                        <label className="handle-field"><span>Handle or profile URL <b>*</b></span><input required value={account.handle} onChange={(e) => updateSocialAccount(index, 'handle', e.target.value)} placeholder="@yourhandle or URL" /></label>
-                        <label className="followers-field"><span>Approx. followers <b>*</b></span><input required value={account.followers} onChange={(e) => updateSocialAccount(index, 'followers', e.target.value)} placeholder="e.g. 15,000" /></label>
-                        {index > 0 && <button type="button" className="icon-button" aria-label="Remove account" onClick={() => removeSocialAccount(index)}><Trash2 size={17} /></button>}
-                      </div>
-                      {account.platform === 'Other' && (
-                        <div className="other-specify">
-                          <label><span>Please specify <b>*</b></span><input required placeholder="Platform name" /></label>
-                        </div>
-                      )}
+                    <div className="channel-row" key={index}>
+                      <label><span>Platform <b>*</b></span><select required value={account.platform} onChange={(e) => updateSocialAccount(index, 'platform', e.target.value)}><option value="">Select a platform</option>{platforms.map((p) => <option key={p} value={p}>{p}</option>)}</select></label>
+                      <label className="handle-field"><span>Handle or profile URL <b>*</b></span><input required value={account.handle} onChange={(e) => updateSocialAccount(index, 'handle', e.target.value)} placeholder="@yourhandle or URL" /></label>
+                      <label className="followers-field"><span>Approx. followers <b>*</b></span><input required value={account.followers} onChange={(e) => updateSocialAccount(index, 'followers', e.target.value)} placeholder="e.g. 15,000" /></label>
+                      {index > 0 && <button type="button" className="icon-button" aria-label="Remove account" onClick={() => removeSocialAccount(index)}><Trash2 size={17} /></button>}
                     </div>
                   ))}
                 </div>
@@ -354,11 +345,6 @@ function App() {
                     <CheckboxPill key={channel} label={channel} checked={acquisition.includes(channel)} onChange={() => toggleAcquisition(channel)} />
                   ))}
                 </div>
-                {acquisition.includes('Other') && (
-                  <div className="other-specify">
-                    <label><span>Please specify <b>*</b></span><input required value={acquisitionOther} onChange={(e) => setAcquisitionOther(e.target.value)} placeholder="How customers will reach Careverse" /></label>
-                  </div>
-                )}
               </div>
             )}
 
@@ -379,11 +365,6 @@ function App() {
                         <CheckboxPill key={platform} label={platform} checked={adPlatformSelections.includes(platform)} onChange={() => toggleAdPlatform(platform)} />
                       ))}
                     </div>
-                    {adPlatformSelections.includes('Other') && (
-                      <div className="other-specify">
-                        <label><span>Please specify <b>*</b></span><input required value={adPlatformOther} onChange={(e) => setAdPlatformOther(e.target.value)} placeholder="Advertising platform" /></label>
-                      </div>
-                    )}
                   </div>
                 )}
               </div>
@@ -414,7 +395,7 @@ function App() {
             {partnerType && (
               <div className="form-block">
                 <div className="block-heading"><span className="number">07</span><div><h3>Your information</h3></div></div>
-                <p className="privacy-note no-margin">We use the information you provide to review your application and operate the Careverse Partner Program. We may share information with service providers that help us with partner management, tracking, payments, and onboarding.</p>
+                <p className="privacy-note no-margin">We use the information you provide to review your application, create and manage your partner account, configure tracking, and operate the Careverse Partner Program. We may share relevant information with our partner, tracking, payment, and onboarding providers as needed to operate the program. We do not sell personal information.</p>
               </div>
             )}
 

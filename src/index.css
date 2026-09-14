@@ -113,11 +113,6 @@ a { color: inherit; }
 
 /* ── Conditional blocks ── */
 .conditional-block { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--line); }
-.other-specify { margin-top: 12px; }
-.other-specify label { display: block; }
-.other-specify label > span:first-child { display: block; margin: 0 0 8px; color: var(--ink); font-size: 12px; font-weight: 800; }
-.other-specify input { width: 100%; border: 1px solid var(--line); outline: none; color: var(--ink); background: var(--white); border-radius: 14px; height: 48px; padding: 0 14px; font-size: 15px; font-weight: 400; transition: border .22s ease, box-shadow .22s ease; }
-.other-specify input:focus { border-color: var(--red); box-shadow: 0 0 0 4px rgba(225,6,44,.10); }
 
 /* ── Social accounts ── */
 .channel-row { display: grid; grid-template-columns: .7fr 1fr .7fr 36px; gap: 12px; align-items: end; margin-bottom: 13px; }
