@@ -3,40 +3,14 @@ import { ArrowRight, Check, Minus, Plus, Trash2, X } from 'lucide-react';
 
 const FORM_ENDPOINT = 'FORM_ENDPOINT';
 
-type PartnerType = 'creator' | 'business' | 'network' | '';
+type PartnerType = 'creator' | 'business' | '';
 
-const platforms = ['Instagram', 'TikTok', 'YouTube', 'Facebook', 'X', 'LinkedIn', 'Blog / site', 'Other'];
+const platforms = ['Instagram', 'TikTok', 'YouTube', 'X', 'Facebook', 'LinkedIn', 'Other'];
 const countries = ['United States', 'Canada', 'United Kingdom', 'Australia', 'Germany', 'France', 'Spain', 'Italy', 'Netherlands', 'Other'];
 const acquisitionChannels = ['Organic social', 'Your website', 'Email', 'Paid advertising', 'Direct sales', 'Client / member distribution', 'Other'];
 const adPlatforms = ['Meta', 'Google', 'TikTok', 'YouTube', 'Other'];
 
 type SocialAccount = { platform: string; handle: string; followers: string };
-type RadioOption = { value: string; label: string };
-
-const bookOfBusinessOptions: RadioOption[] = [
-  { value: 'under-25', label: 'Under 25' },
-  { value: '25-99', label: '25–99' },
-  { value: '100-499', label: '100–499' },
-  { value: '500-999', label: '500–999' },
-  { value: '1000+', label: '1,000+' },
-];
-
-const businessVolumeOptions: RadioOption[] = [
-  { value: 'under-10', label: 'Under 10' },
-  { value: '10-49', label: '10–49' },
-  { value: '50-99', label: '50–99' },
-  { value: '100-499', label: '100–499' },
-  { value: '500+', label: '500+' },
-];
-
-const networkSizeOptions: RadioOption[] = bookOfBusinessOptions;
-const networkVolumeOptions: RadioOption[] = [
-  { value: 'under-25', label: 'Under 25' },
-  { value: '25-99', label: '25–99' },
-  { value: '100-499', label: '100–499' },
-  { value: '500-999', label: '500–999' },
-  { value: '1000+', label: '1,000+' },
-];
 
 const terms = [
   ['1. The Program', 'The Careverse Partner Program allows approved partners to promote Careverse and earn commissions on qualifying referrals made through their unique tracking link.'],
@@ -57,6 +31,8 @@ function App() {
   const [purchasesAds, setPurchasesAds] = useState('');
   const [adPlatformSelections, setAdPlatformSelections] = useState<string[]>([]);
   const [hasAuthority, setHasAuthority] = useState('');
+  const [acquisitionOther, setAcquisitionOther] = useState('');
+  const [adPlatformOther, setAdPlatformOther] = useState('');
   const [isTermsOpen, setIsTermsOpen] = useState(false);
   const [openTerm, setOpenTerm] = useState<number | null>(null);
   const [submitted, setSubmitted] = useState(false);
@@ -88,27 +64,28 @@ function App() {
     setError('');
     const form = event.currentTarget;
     const data = new FormData(form);
-    const firstName = String(data.get('first_name') ?? '').trim();
-    const lastName = String(data.get('last_name') ?? '').trim();
+    const fullName = String(data.get('full_name') ?? '').trim();
     const email = String(data.get('email') ?? '').trim();
     const country = String(data.get('country') ?? '').trim();
+    const stateProvince = String(data.get('state_province') ?? '').trim();
 
-    if (!partnerType || !firstName || !lastName || !email || !country) {
+    if (!partnerType || !fullName || !email || !country) {
       setError('Please complete the required fields.');
       return;
     }
 
     if (partnerType === 'creator') {
-      const validAccounts = socialAccounts.filter((a) => a.platform && a.handle.trim());
+      const validAccounts = socialAccounts.filter((a) => a.platform && a.handle.trim() && a.followers.trim());
       if (validAccounts.length === 0) {
         setError('Please add at least one social account.');
         return;
       }
     }
 
-    if (partnerType === 'business' || partnerType === 'network') {
-      const legalName = String(data.get(partnerType === 'business' ? 'legal_business_name' : 'network_name') ?? '').trim();
-      if (!legalName) {
+    if (partnerType === 'business') {
+      const legalName = String(data.get('legal_business_name') ?? '').trim();
+      const website = String(data.get('business_website') ?? '').trim();
+      if (!legalName || !website) {
         setError('Please complete the required fields.');
         return;
       }
@@ -116,27 +93,29 @@ function App() {
 
     if (hasAuthority === 'no') {
       const dmName = String(data.get('dm_name') ?? '').trim();
+      const dmRole = String(data.get('dm_role') ?? '').trim();
       const dmEmail = String(data.get('dm_email') ?? '').trim();
-      if (!dmName || !dmEmail) {
-        setError('Please provide the decision-maker\'s information.');
+      if (!dmName || !dmRole || !dmEmail) {
+        setError('Please provide the decision-maker\u2019s information.');
         return;
       }
     }
 
     const payload = {
       partner_type: partnerType,
-      first_name: firstName,
-      last_name: lastName,
+      full_name: fullName,
       email,
       phone: String(data.get('phone') ?? '').trim(),
       country,
-      state: String(data.get('state') ?? '').trim(),
+      state_province: stateProvince,
       source: 'partner-application',
       ...buildTypeSpecificPayload(partnerType, data, socialAccounts),
       expected_performance: String(data.get('expected_performance') ?? '').trim(),
       acquisition_channels: acquisition,
+      acquisition_other: acquisition.includes('Other') ? acquisitionOther.trim() : '',
       purchases_ads: purchasesAds,
       ad_platforms: purchasesAds === 'yes' ? adPlatformSelections : [],
+      ad_platform_other: purchasesAds === 'yes' && adPlatformSelections.includes('Other') ? adPlatformOther.trim() : '',
       has_authority: hasAuthority,
       decision_maker: hasAuthority === 'no' ? {
         name: String(data.get('dm_name') ?? '').trim(),
@@ -168,7 +147,7 @@ function App() {
       return {
         creator_name: String(data.get('creator_name') ?? '').trim(),
         website: String(data.get('website') ?? '').trim(),
-        social_accounts: accounts.filter((a) => a.platform && a.handle.trim()),
+        social_accounts: accounts.filter((a) => a.platform && a.handle.trim() && a.followers.trim()),
       };
     }
     if (type === 'business') {
@@ -177,16 +156,14 @@ function App() {
         brand_name: String(data.get('brand_name') ?? '').trim(),
         business_website: String(data.get('business_website') ?? '').trim(),
         business_description: String(data.get('business_description') ?? '').trim(),
+        business_category: String(data.get('business_category') ?? '').trim(),
+        entity_type: String(data.get('entity_type') ?? '').trim(),
+        registration_number: String(data.get('registration_number') ?? '').trim(),
+        registration_location: String(data.get('registration_location') ?? '').trim(),
+        mailing_address: String(data.get('mailing_address') ?? '').trim(),
+        business_duration: String(data.get('business_duration') ?? '').trim(),
+        public_links: String(data.get('public_links') ?? '').trim(),
         book_of_business: String(data.get('book_of_business') ?? '').trim(),
-        expected_volume: String(data.get('expected_volume') ?? '').trim(),
-      };
-    }
-    if (type === 'network') {
-      return {
-        network_name: String(data.get('network_name') ?? '').trim(),
-        network_website: String(data.get('network_website') ?? '').trim(),
-        network_type: String(data.get('network_type') ?? '').trim(),
-        network_size: String(data.get('network_size') ?? '').trim(),
         expected_volume: String(data.get('expected_volume') ?? '').trim(),
       };
     }
@@ -226,7 +203,7 @@ function App() {
       <section className="application-section" id="top">
         <div className="container form-wrap">
           <div className="page-header">
-            <h1>Careverse Partner Application</h1>
+            <h1>Partner Program Application</h1>
             <p className="page-subtitle">Tell us about yourself and your partnership.</p>
           </div>
 
@@ -246,44 +223,46 @@ function App() {
                   <input type="radio" name="partner_type" value="business" required checked={partnerType === 'business'} onChange={() => setPartnerType('business')} />
                   <span className="radio-dot" /><span className="radio-label">Business / Agency</span>
                 </label>
-                <label className={`radio-card ${partnerType === 'network' ? 'selected' : ''}`}>
-                  <input type="radio" name="partner_type" value="network" required checked={partnerType === 'network'} onChange={() => setPartnerType('network')} />
-                  <span className="radio-dot" /><span className="radio-label">Network</span>
-                </label>
               </div>
             </div>
 
-            {/* 02 — Your information */}
+            {/* 02 — Basic information */}
             <div className="form-block">
               <div className="block-heading"><span className="number">02</span><div><h3>Your information</h3></div></div>
               <div className="field-grid">
-                <Field label="First name" name="first_name" required />
-                <Field label="Last name" name="last_name" required />
+                <Field label="Full name" name="full_name" required wide />
                 <Field label="Email address" name="email" type="email" required />
                 <Field label="Phone number" name="phone" optional />
                 <SelectField label="Country" name="country" required options={countries} placeholder="Select a country" />
-                <Field label="State / region" name="state" optional />
+                <Field label="State / Province" name="state_province" required />
               </div>
               <p className="field-note">Your partner account will be created after approval. You’ll receive an email to set your password and access the partner portal.</p>
             </div>
 
-            {/* 03 — Dynamic section */}
+            {/* 03 — Creator details */}
             {partnerType === 'creator' && (
               <div className="form-block">
                 <div className="block-heading"><span className="number">03</span><div><h3>Creator details</h3></div></div>
                 <div className="field-grid">
                   <Field label="Creator / public name" name="creator_name" required />
-                  <Field label="Website or profile URL" name="website" optional />
+                  <Field label="Website" name="website" type="url" optional />
                 </div>
                 <div className="subsection-label">Your social accounts</div>
                 <p className="field-support">Add at least one social account. <b>*</b></p>
                 <div className="channels-list">
                   {socialAccounts.map((account, index) => (
-                    <div className="channel-row" key={index}>
-                      <label><span>Platform <b>*</b></span><select required value={account.platform} onChange={(e) => updateSocialAccount(index, 'platform', e.target.value)}><option value="">Select a platform</option>{platforms.map((p) => <option key={p} value={p}>{p}</option>)}</select></label>
-                      <label className="handle-field"><span>Handle or profile URL <b>*</b></span><input required value={account.handle} onChange={(e) => updateSocialAccount(index, 'handle', e.target.value)} placeholder="@yourhandle or URL" /></label>
-                      <label className="followers-field"><span>Approx. followers <b>*</b></span><input required value={account.followers} onChange={(e) => updateSocialAccount(index, 'followers', e.target.value)} placeholder="e.g. 15,000" /></label>
-                      {index > 0 && <button type="button" className="icon-button" aria-label="Remove account" onClick={() => removeSocialAccount(index)}><Trash2 size={17} /></button>}
+                    <div key={index}>
+                      <div className="channel-row">
+                        <label><span>Platform <b>*</b></span><select required value={account.platform} onChange={(e) => updateSocialAccount(index, 'platform', e.target.value)}><option value="">Select a platform</option>{platforms.map((p) => <option key={p} value={p}>{p}</option>)}</select></label>
+                        <label className="handle-field"><span>Handle or profile URL <b>*</b></span><input required value={account.handle} onChange={(e) => updateSocialAccount(index, 'handle', e.target.value)} placeholder="@yourhandle or URL" /></label>
+                        <label className="followers-field"><span>Approximate followers <b>*</b></span><input required value={account.followers} onChange={(e) => updateSocialAccount(index, 'followers', e.target.value)} placeholder="e.g. 15,000" /></label>
+                        {index > 0 && <button type="button" className="icon-button" aria-label="Remove account" onClick={() => removeSocialAccount(index)}><Trash2 size={17} /></button>}
+                      </div>
+                      {account.platform === 'Other' && (
+                        <div className="other-specify">
+                          <label><span>Please specify <b>*</b></span><input required placeholder="Platform name" /></label>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -291,46 +270,47 @@ function App() {
               </div>
             )}
 
+            {/* 03 — Business details */}
             {partnerType === 'business' && (
               <div className="form-block">
-                <div className="block-heading"><span className="number">03</span><div><h3>Business details</h3></div></div>
+                <div className="block-heading"><span className="number">03</span><div><h3>Business / Agency details</h3></div></div>
                 <div className="field-grid">
                   <Field label="Legal business name" name="legal_business_name" required />
-                  <Field label="Brand / company name" name="brand_name" optional />
+                  <Field label="Brand / company name" name="brand_name" required />
                   <Field label="Website" name="business_website" type="url" required />
                   <Field label="What does your business primarily do?" name="business_description" required />
+                  <Field label="Business category" name="business_category" required />
+                  <Field label="Entity type" name="entity_type" required />
+                  <Field label="Registration number" name="registration_number" required />
+                  <Field label="Registration location" name="registration_location" required />
+                  <Field label="Mailing address" name="mailing_address" required wide />
+                  <Field label="How long has the business operated?" name="business_duration" required />
                 </div>
-                <div className="subsection-label">Your book of business</div>
-                <RadioGroup label="Approximately how large is your current book of business?" name="book_of_business" required options={bookOfBusinessOptions} />
-                <div className="subsection-label">Expected Careverse volume</div>
-                <RadioGroup label="How many paid Careverse memberships do you realistically expect to drive per month?" name="expected_volume" required options={businessVolumeOptions} />
-                <p className="field-support">This is an estimate of the membership volume you believe your business could generate for Careverse.</p>
+                <div className="subsection-label">Public business / profile links</div>
+                <label className="textarea-label">
+                  <span>Public business / profile links <em>Optional</em></span>
+                  <textarea name="public_links" placeholder="Share any relevant links to your business profiles, listings, or portfolios." />
+                </label>
+                <div className="subsection-label">Book of business</div>
+                <label className="textarea-label">
+                  <span>Tell us about the approximate size of your current book of business. <b>*</b></span>
+                  <textarea name="book_of_business" required placeholder="Describe the size and scope of your current book of business." />
+                </label>
+                <div className="subsection-label">Expected Careverse membership volume</div>
+                <label className="textarea-label">
+                  <span>What level of monthly Careverse membership volume do you believe you could realistically generate? <b>*</b></span>
+                  <textarea name="expected_volume" required placeholder="Describe the monthly membership volume you believe is realistic." />
+                </label>
               </div>
             )}
 
-            {partnerType === 'network' && (
-              <div className="form-block">
-                <div className="block-heading"><span className="number">03</span><div><h3>Network details</h3></div></div>
-                <div className="field-grid">
-                  <Field label="Network name" name="network_name" required />
-                  <Field label="Website" name="network_website" type="url" required />
-                  <Field label="What type of network do you operate?" name="network_type" required wide />
-                </div>
-                <div className="subsection-label">Network size</div>
-                <RadioGroup label="Approximately how many active partners are in your network?" name="network_size" required options={networkSizeOptions} />
-                <div className="subsection-label">Expected Careverse volume</div>
-                <RadioGroup label="How many paid Careverse memberships do you realistically expect to drive per month?" name="expected_volume" required options={networkVolumeOptions} />
-                <p className="field-support">This is an estimate of the membership volume you believe your network could generate for Careverse.</p>
-              </div>
-            )}
-
-            {/* 04 — Your expectations */}
+            {/* 04 — Partnership expectations */}
             {partnerType && (
               <div className="form-block">
-                <div className="block-heading"><span className="number">04</span><div><h3>Your expectations</h3></div></div>
+                <div className="block-heading"><span className="number">04</span><div><h3>Partnership expectations</h3></div></div>
                 <label className="textarea-label">
-                  <span>How do you expect to perform with Careverse? {partnerType === 'creator' ? <em>Optional</em> : <b>*</b>}</span>
-                  <textarea name="expected_performance" placeholder="Tell us briefly why you believe your expected volume is realistic." required={partnerType !== 'creator'} />
+                  <span>How do you expect to perform with Careverse? <b>*</b></span>
+                  <textarea name="expected_performance" required placeholder="Tell us briefly how you expect to generate Careverse memberships and what level of volume you believe is realistic." />
                 </label>
               </div>
             )}
@@ -345,6 +325,11 @@ function App() {
                     <CheckboxPill key={channel} label={channel} checked={acquisition.includes(channel)} onChange={() => toggleAcquisition(channel)} />
                   ))}
                 </div>
+                {acquisition.includes('Other') && (
+                  <div className="other-specify">
+                    <label><span>Please specify <b>*</b></span><input required value={acquisitionOther} onChange={(e) => setAcquisitionOther(e.target.value)} placeholder="How customers will reach Careverse" /></label>
+                  </div>
+                )}
               </div>
             )}
 
@@ -365,47 +350,52 @@ function App() {
                         <CheckboxPill key={platform} label={platform} checked={adPlatformSelections.includes(platform)} onChange={() => toggleAdPlatform(platform)} />
                       ))}
                     </div>
+                    {adPlatformSelections.includes('Other') && (
+                      <div className="other-specify">
+                        <label><span>Please specify <b>*</b></span><input required value={adPlatformOther} onChange={(e) => setAdPlatformOther(e.target.value)} placeholder="Advertising platform" /></label>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
             )}
 
-            {/* 07 — Partnership authority */}
+            {/* 07 — Decision-making authority */}
             {partnerType && (
               <div className="form-block">
-                <div className="block-heading"><span className="number">06</span><div><h3>Partnership authority</h3></div></div>
-                <p className="field-support">Are you authorized to approve and enter into this partnership? <b>*</b></p>
+                <div className="block-heading"><span className="number">06</span><div><h3>Decision-making authority</h3></div></div>
+                <p className="field-support">Are you authorized to make decisions about this partnership on behalf of yourself or your organization? <b>*</b></p>
                 <div className="inline-radios">
-                  <label className={`inline-radio ${hasAuthority === 'yes' ? 'selected' : ''}`}><input type="radio" name="has_authority" value="yes" checked={hasAuthority === 'yes'} onChange={() => setHasAuthority('yes')} /><span className="radio-dot" /><span>Yes — I can make this decision</span></label>
+                  <label className={`inline-radio ${hasAuthority === 'yes' ? 'selected' : ''}`}><input type="radio" name="has_authority" value="yes" checked={hasAuthority === 'yes'} onChange={() => setHasAuthority('yes')} /><span className="radio-dot" /><span>Yes — I can approve and enter into this partnership</span></label>
                   <label className={`inline-radio ${hasAuthority === 'no' ? 'selected' : ''}`}><input type="radio" name="has_authority" value="no" checked={hasAuthority === 'no'} onChange={() => setHasAuthority('no')} /><span className="radio-dot" /><span>No — someone else needs to approve it</span></label>
                 </div>
                 {hasAuthority === 'no' && (
                   <div className="conditional-block">
                     <div className="field-grid">
-                      <Field label="Who is the decision-maker?" name="dm_name" required />
-                      <Field label="Their role / title" name="dm_role" required />
-                      <Field label="Their email" name="dm_email" type="email" required wide />
+                      <Field label="Decision-maker name" name="dm_name" required />
+                      <Field label="Decision-maker role" name="dm_role" required />
+                      <Field label="Decision-maker email" name="dm_email" type="email" required wide />
                     </div>
                   </div>
                 )}
               </div>
             )}
 
-            {/* 08 — Your information (data use) */}
+            {/* 08 — Data notice */}
             {partnerType && (
               <div className="form-block">
                 <div className="block-heading"><span className="number">07</span><div><h3>Your information</h3></div></div>
-                <p className="privacy-note no-margin">We use the information you provide to review your application, create and manage your partner account, configure tracking, and operate the Careverse Partner Program. We may share relevant information with our partner, tracking, payment, and onboarding providers as needed to operate the program. We do not sell personal information.</p>
+                <p className="privacy-note no-margin">We use the information you provide to review your application, create and manage your partner account, configure tracking, and determine the appropriate partner relationship and commission structure.</p>
               </div>
             )}
 
-            {/* 09 — Final details */}
+            {/* 09 — Final confirmations */}
             {partnerType && (
               <div className="form-block agreements-block">
                 <div className="block-heading"><span className="number">08</span><div><h3>Final details</h3></div></div>
                 <Checkbox name="confirm_accurate" text="I confirm that the information in this application is accurate." />
                 <Checkbox name="no_guarantee" text="I understand that submitting an application does not guarantee acceptance or a particular commission rate." />
-                <Checkbox name="terms" text={<>I agree to the <button type="button" className="inline-button" onClick={() => setIsTermsOpen(true)}>Careverse Partner Program Terms</button></>} />
+                <Checkbox name="terms" text={<>I agree to the <button type="button" className="inline-button" onClick={() => setIsTermsOpen(true)}>Careverse Partner Terms</button></>} />
               </div>
             )}
 
@@ -452,19 +442,6 @@ function Field({ label, name, type = 'text', required = false, optional = false,
 
 function SelectField({ label, name, required = false, options, placeholder }: { label: string; name: string; required?: boolean; options: string[]; placeholder?: string }) {
   return <label><span>{label} {required && <b>*</b>}</span><select name={name} required={required} defaultValue=""><option value="">{placeholder ?? 'Select...'}</option>{options.map((o) => <option key={o} value={o}>{o}</option>)}</select></label>;
-}
-
-function RadioGroup({ label, name, required, options }: { label: string; name: string; required?: boolean; options: RadioOption[] }) {
-  return (
-    <div className="radio-group">
-      <span className="radio-group-label">{label} {required && <b>*</b>}</span>
-      <div className="radio-pills">
-        {options.map((opt) => (
-          <label key={opt.value} className="radio-pill"><input type="radio" name={name} value={opt.value} required={required} /><span className="radio-dot" /><span>{opt.label}</span></label>
-        ))}
-      </div>
-    </div>
-  );
 }
 
 function Checkbox({ name, text }: { name: string; text: React.ReactNode }) {
